@@ -26,14 +26,8 @@ fade_volume:
       name: Fade duration
       description: Length of time in seconds the fade should take.
       required: true
-      default: 5
-      example: '5'
       selector:
-        number:
-          mode: box
-          min: 0
-          max: 100000
-          unit_of_measurement: s
+        time:
     curve:
       name: Fade curve algorithm
       description: Shape of the fade curve to apply.
@@ -48,7 +42,8 @@ fade_volume:
           - linear
   variables:
     steps_per_second: 10
-    total_steps: '{{ (steps_per_second * duration) | int(0) }}'
+    total_seconds: '(as_timestamp(duration) - as_timestamp(now())'
+    total_steps: '{{ (steps_per_second * total_seconds) | int(0) }}'
     start_volume: '{{ state_attr(target_player, ''volume_level'') | float(0) }}'
     start_diff: '{{ (target_volume - start_volume) | float(0) }}'
   sequence:
